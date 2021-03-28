@@ -1,0 +1,3 @@
+true
+abcd
+(a|bc)*|cd
