@@ -600,10 +600,9 @@ string creareExpresieExtinsa(const string& regExp){
         exit(-1);
     }
 
-    // expresia finala va fi in forma (...).(#)
-    return DESCHIDERE_PARANTEZA + expresieExtinsa + INCHIDERE_PARANTEZA + OPERATOR_CONCATENARE + DESCHIDERE_PARANTEZA
-                                + SIMBOL_FINAL + INCHIDERE_PARANTEZA;
 
+    // expresia finala va fi in forma (...).#
+    return DESCHIDERE_PARANTEZA + expresieExtinsa + INCHIDERE_PARANTEZA + OPERATOR_CONCATENARE + SIMBOL_FINAL;
 }
 
 
@@ -806,6 +805,30 @@ bool creareNodArbore(char element){ // functia principala de creare a unui nod p
             radacinaNivel->dreapta = nodCurent;
             nodCurent->radacina = radacinaNivel;
             // nu mai este agaugat in stiva dearece este frunza si deja a fost legat de radacina
+
+            if(radacinaNivel->caracter == OPERATOR_CONCATENARE){
+                // setare nullable
+                radacinaNivel->nullable = radacinaNivel->stanga->nullable && radacinaNivel->dreapta->nullable;
+
+                // setare firstpos
+                if(radacinaNivel->stanga->nullable){
+                    radacinaNivel->firstPos = reunestePozitii(radacinaNivel->stanga->firstPos,radacinaNivel->dreapta->firstPos);
+                }
+                else{
+                    radacinaNivel->firstPos = radacinaNivel->stanga->firstPos;
+                }
+
+                // setare lastpos
+                if(radacinaNivel->dreapta->nullable){
+                    radacinaNivel->lastPos = reunestePozitii(radacinaNivel->stanga->lastPos,radacinaNivel->dreapta->lastPos);
+                }
+                else{
+                    radacinaNivel->lastPos = radacinaNivel->dreapta->lastPos;
+                }
+
+                return true;
+            }
+
             return true;
         }
 
